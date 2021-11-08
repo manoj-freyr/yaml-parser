@@ -4,6 +4,7 @@
 #ifndef GST_ACTION_H
 #define GST_ACTION_H
 #include <string>
+#include <vector>
 
 struct gst_action{
     gst_action *next;
@@ -23,10 +24,11 @@ struct gst_action{
 };
 
 
-void add_action(gst_action *&actions, std::string name,  int count,
+void add_action(std::vector<gst_action> &actions, std::string name, 
+									std::string module_name,  int count,
 									std::string ops, float target_stress, int duration,
 									int size_a, int size_b, int size_c, int log_interval,
 									bool parallel, bool copy_matrix);
 
-void destroy_actions(gst_action *&actions);
+void destroy_actions(std::vector<gst_action> &actions);
 #endif 

@@ -91,7 +91,7 @@
 #include <cerrno>
 #include <iostream>
 #include "gstaction.h"
-
+#include <vector>
 /* Set environment variable DEBUG=1 to enable debug output. */
 int debug = 0;
 
@@ -118,7 +118,7 @@ const std::string OPS_TYPE{"ops_type"};
 const std::string LOG_INTERVAL{"log_interval"};
 
 
-enum state {
+enum parse_state {
     STATE_START,    /* start state */
     STATE_STREAM,   /* start/end stream */
     STATE_DOCUMENT, /* start/end document */
@@ -147,9 +147,9 @@ enum state {
 
 /* Our application parser state data. */
 struct parser_state {
-    enum state state;      /* The current parse state */
+    parse_state state;      /* The current parse state */
     gst_action f;        /* Fruit data elements. */
-    struct gst_action *actionlist = nullptr;   /* List of 'fruit' objects. */
+    std::vector<gst_action> actionlist;   /* List of 'fruit' objects. */
 };
 
 
@@ -163,6 +163,7 @@ int consume_event(struct parser_state *s, yaml_event_t *event)
 {
     char *value;
     std::string temp;
+		gst_action f;
     if (debug) {
         printf("state=%d event=%d\n", s->state, event->type);
     }
@@ -291,7 +292,7 @@ int consume_event(struct parser_state *s, yaml_event_t *event)
             break;
 
         case YAML_MAPPING_END_EVENT:
-            add_action(s->actionlist, s->f.m_name, s->f.m_count, s->f.m_ops,
+            add_action(s->actionlist, s->f.m_name, s->f.m_module_name,s->f.m_count, s->f.m_ops,
 									s->f.m_target_stress, s->f.m_duration, s->f.m_size_a,
 									s->f.m_size_b, s->f.m_size_c, s->f.m_log_interval, 
 									s->f.m_parallel, s->f.m_copy_matrix);
@@ -319,7 +320,11 @@ int consume_event(struct parser_state *s, yaml_event_t *event)
     case STATE_MODULENAME:
         switch (event->type) {
         case YAML_SCALAR_EVENT:
-            s->f.m_module_name = std::string{(char *)event->data.scalar.value};
+						temp = (char *)event->data.scalar.value;
+						std::cout << "MANOJ:" << temp << std::endl;
+            s->f.m_module_name = temp;
+						temp.clear();
+						std::cout << "MANOJ:" << s->f.m_module_name << std::endl;
             s->state = STATE_ACTIONKEY;
             break;
         default:
@@ -509,9 +514,9 @@ main(int argc, char *argv[])
     } while (state.state != STATE_STOP);
 
     /* Output the parsed data. */
-    for (gst_action *f = state.actionlist; f; f = f->next) {
-        printf("action: name=%s, module=%s, count=%d\n", f->m_name,
-						f->m_module_name, f->m_count);
+    for (auto f : state.actionlist ) {
+        printf("action: name=%s,count=%d, modname=%s\n", f.m_name.c_str(),
+						f.m_count, f.m_module_name.c_str());
     }
     code = EXIT_SUCCESS;
 
