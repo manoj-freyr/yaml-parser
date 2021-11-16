@@ -12,13 +12,13 @@ struct gst_action{
     std::string m_module_name{};
     std::string m_devices{};
     std::string m_ops{};
-		float m_target_stress;
+    float m_target_stress;
     int m_count;
     int m_duration;
-		int m_size_a;
-		int m_size_b;
-		int m_size_c;
-		int m_log_interval;
+    int m_size_a;
+    int m_size_b;
+    int m_size_c;
+    int m_log_interval;
     bool m_parallel;
     bool m_copy_matrix;
 };
