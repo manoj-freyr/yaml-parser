@@ -23,12 +23,15 @@ zypper install libyaml-devel
 ```
 
 ## Building
+```
 git clone https://github.com/manoj-freyr/yaml-parser.git
 cd yaml-parser
 mkdir build
 cd build
 cmake ..
 make 
-
+```
 ## Run
+```
 ./helloDemo
+```
