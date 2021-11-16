@@ -1,11 +1,13 @@
 # yaml-parser
 yaml parser based on libyaml
 
-## prerequisites
+## Prerequisites
 First install libyaml-dev
 
 ### for Ubuntu
-
+```
+apt install libyaml-dev
+```
 
 
 ### for centos 7
@@ -20,5 +22,13 @@ zypper refresh
 zypper install libyaml-devel
 ```
 
+## Building
+git clone https://github.com/manoj-freyr/yaml-parser.git
+cd yaml-parser
+mkdir build
+cd build
+cmake ..
+make 
 
-
+## Run
+./helloDemo
